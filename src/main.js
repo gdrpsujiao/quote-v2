@@ -3,6 +3,9 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+// 自定义封装组件
+import './plugins/components'
+
 import '@assets/css/common.scss'
 
 import { 
@@ -12,7 +15,11 @@ import {
   Radio,
   RadioGroup,
   Field,
-  Notify
+  Notify,
+  Collapse,
+  CollapseItem,
+  Tabs,
+  Tab
 } from 'vant'
 
 Vue.config.productionTip = false
@@ -24,6 +31,10 @@ Vue.use(Button)
   .use(RadioGroup)
   .use(Field)
   .use(Notify)
+  .use(Collapse)
+  .use(CollapseItem)
+  .use(Tabs)
+  .use(Tab)
 
 new Vue({
   router,

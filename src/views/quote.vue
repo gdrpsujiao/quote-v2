@@ -94,10 +94,23 @@
             </div>
         </div>
 
-        <div class="form-info">
-            <span>总金额</span>
-            <span class="money">{{ money }}</span>
+        <div class="flex-sb form-info">
+            <div class="form-item">
+                <span>总金额</span>
+                <span class="money">{{ money }}</span>
+            </div>
+            <div class="btn-expand">
+                <v-button 
+                    text="重置" 
+                    type="warning"
+                    @click="handlerReset"
+                     />
+                <v-button 
+                    text="暂存"
+                    @click="handlerSave" />
+            </div>
         </div>
+       
 
         <div class="form-info">
              <div class="tr">
@@ -126,10 +139,62 @@
             </div>
         </div>
 
+        <section v-if="hasLocalData" class="data-list-container">
+            <!-- <div 
+                class="data-list" 
+                v-for="(item, index) in list"
+                :key="index">
+                    {{ item.data }}
+            </div> -->
+            <van-tabs>
+                <van-tab 
+                v-for="(item, index) in this.localQuote" 
+                :key="index"
+                :title="item.shape">
+                    <div class="data-content">
+                        <!-- <div class="tr">
+                            {{ item.shape }}
+                        </div> -->
+                        <van-icon 
+                            class="icon-clear" 
+                            name="clear" 
+                            @click="handlerDelete(index)" />
+                        <div class="tr" v-if="item.isBan">
+                            <span>长：{{ item.long }}</span>
+                            <span>宽：{{ item.width }}</span>
+                            <span>厚度：{{ item.height }}</span>
+                        </div>
+                        <div class="tr" v-else>
+                            <span>直径：{{ item.diameter }}</span>
+                            <span>长：{{ item.circleLong }}</span>
+                        </div>
+                        <div class="tr">
+                            <span>数量：</span>
+                            <span>{{ item.number }}</span>
+                        </div>
+                        <div class="tr">
+                            <span>金额：</span>
+                            <span>{{ item.money }}</span>
+                        </div>
+                        <div class="tr">
+                            <span>重量：</span>
+                            <span>{{ item.result.allWeight }}</span>
+                        </div>
+                    </div>
+                </van-tab>
+            </van-tabs>
+
+            <div class="btn-container">
+                <span class="btn-clean" @click="handlerClean">清空</span>
+            </div>
+            <!-- <v-button text="清空" size="large " type="default" /> -->
+        </section>
+
     </section>
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 export default {
     name: 'Quote',
     data() {
@@ -149,6 +214,7 @@ export default {
         }
     },
     computed: {
+        ...mapState('quote', ['localQuote']),
         isBan() {
             return this.formData.shape == '板'
         },
@@ -201,9 +267,13 @@ export default {
                 allCost: this.toRound(allCost),
                 allProfit: this.toRound(allProfit)
             }
+        },
+        hasLocalData() {
+            return this.localQuote.length > 0? true: false
         }
     },
     methods: {
+        ...mapActions('quote', ['updateLocalQuote']),
         toRound(num, decimal = 5) {
             if(isNaN(num)) {
                 return 0
@@ -211,6 +281,48 @@ export default {
             const p1 = Math.pow(10, decimal+1)
             const p2 = Math.pow(10, decimal)
             return Math.round(num*p1/10)/p2
+        },
+        handlerReset() {
+            // console.log(1111)
+            this.formData = {
+                // shape: "板",
+                ...this.formData,
+                long: "",
+                width: "",
+                height: "",
+                diameter: "", // 直径
+                circleLong: "",
+                density: 1.2, // 密度
+                price: "",
+                cost: '',
+                number: 1
+            }
+        },
+        handlerSave() {
+            // 存储本地列表
+            // 获取当前
+            const localData = [...this.localQuote]
+            // console.log(localData)
+            const newData = [
+                {
+                    ...this.formData,
+                    isBan: this.isBan,
+                    money: this.money,
+                    weight: this.weight,
+                    result: {...this.result}
+                },
+                ...localData
+            ]
+            // console.log(newData)
+            this.updateLocalQuote(newData)
+        },
+        handlerClean() {
+            this.updateLocalQuote([])
+        },
+        handlerDelete(index) {
+            let list = [...this.localQuote]
+            list.splice(index, 1)
+            this.updateLocalQuote(list)
         }
     }
 }
@@ -269,6 +381,53 @@ export default {
             span:last-child {
                 color: #f56c6c;
                 font-size: 20px;
+            }
+        }
+    }
+    .btn-expand {
+        display: flex;
+        align-items: center;
+        button {
+            margin-right: 20px;
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+    .data-list-container {
+        margin-top: 50px;
+        .data-content {
+            position: relative;
+            padding: 20px;
+            background: white;
+            color: $primary;
+            font-size: 14px;
+            .tr {
+                display: flex;
+                justify-content: space-between;
+                padding-bottom: 10px;
+                &:last-child {
+                    padding-bottom: 0;
+                }
+                span {
+                    flex: 1;
+                }
+            }
+            .icon-clear {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                font-size: 20px;
+                color: $warning;
+            }
+        }
+        .btn-container {
+            margin-top: 20px;
+            padding-right: 20px;
+            text-align: right;
+            .btn-clean {
+                color: $danger;
+                font-size: 14px;
             }
         }
     }

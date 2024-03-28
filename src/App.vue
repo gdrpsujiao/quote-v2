@@ -1,8 +1,10 @@
 <template>
   <div id="app">
-    <ap-header />
-    <ap-menu />
-    <router-view />
+    <section class="layout-page-container">
+      <ap-header />
+      <ap-menu />
+      <router-view />
+    </section>
   </div>
 </template>
 
@@ -20,5 +22,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.layout-page-container {
 
+}
 </style>
