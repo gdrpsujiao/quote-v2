@@ -9,6 +9,7 @@
                 <van-radio-group v-model="formData.shape" direction="horizontal">
                     <van-radio name="板">板</van-radio>
                     <van-radio name="棒">棒</van-radio>
+                    <van-radio name="管">管</van-radio>
                 </van-radio-group>
             </div>
         </div>
@@ -60,6 +61,13 @@
                         class="v-input" />
                 </div>
             </div>
+            <van-field 
+                v-show="isGuan"
+                v-model="formData.thickness" 
+                label="壁厚"
+                placeholder="壁厚 mm"
+                type="number"
+                class="v-input" />
         </section>
         
         <van-field 
@@ -166,6 +174,7 @@
                         </div>
                         <div class="tr" v-else>
                             <span>直径：{{ item.diameter }}</span>
+                            <span v-if="item.isGuan">壁厚：{{ item.thickness }}</span>
                             <span>长：{{ item.circleLong }}</span>
                         </div>
                         <div class="tr">
@@ -209,7 +218,9 @@ export default {
                 density: 1.2, // 密度
                 price: "",
                 cost: '',
-                number: 1
+                number: 1,
+                // insideDiameter: '', // 内径
+                thickness: '', // 壁厚
             },
         }
     },
@@ -218,31 +229,39 @@ export default {
         isBan() {
             return this.formData.shape == '板'
         },
+        isBang() {
+            return this.formData.shape == '棒'
+        },
+        isGuan() {
+            return this.formData.shape == '管'
+        },
         money() {
-            const { shape, long, width, height, density, number, price, diameter, circleLong, } = this.formData;
-            let V 
-            if(shape === '板') {
-                V = long * width * height
-            } else {
-                V = (diameter/2.0)*(diameter/2.0)*3.14*circleLong
-            }
-            const weight = ((V * density) / 1000000.0).toFixed(5);
-            const unitPrice = weight * price;
+            // const { long, width, height, density, number, price, diameter, circleLong, } = this.formData;
+            // let V 
+            // if(this.isBan) {
+            //     V = long * width * height
+            // } else {
+            //     V = (diameter/2.0)*(diameter/2.0)*3.14*circleLong
+            // }
+            // const weight = ((V * density) / 1000000.0).toFixed(5);
+            const { price, number } = this.formData
+            const unitPrice = this.weight * price;
             const money = unitPrice * number;
             // return money.toFixed(5);
             return this.toRound(money)
         },
         weight() {
-            const { shape, long, width, height, density, diameter, circleLong, } = this.formData;
-            let V 
-            if(shape === '板') {
-                V = long * width * height
-            } else {
-                const radios = diameter/2.0
-                V = radios*radios*3.14*circleLong
-            }
-            const weight = ((V * density) / 1000000.0).toFixed(5);
-            return weight
+            // const { shape, long, width, height, density, diameter, circleLong, } = this.formData;
+            // let V 
+            // if(shape === '板') {
+            //     V = long * width * height
+            // } else {
+            //     const radios = diameter/2.0
+            //     V = radios*radios*3.14*circleLong
+            // }
+            // const weight = ((V * density) / 1000000.0).toFixed(5);
+            // return weight
+            return this.getWeight()
         },
         result() {
             const { number, cost, price } = this.formData
@@ -282,6 +301,47 @@ export default {
             const p2 = Math.pow(10, decimal)
             return Math.round(num*p1/10)/p2
         },
+        getVolume(diameter) {
+            // 直径从外面传进来
+            // 区分外径、内径
+            const { long, width, height, circleLong } = this.formData
+            let v
+            if(this.isBan) {
+                v = long * width * height
+            } else {
+                v = (diameter/2.0)*(diameter/2.0)*3.14*circleLong
+            }
+            return v
+        },
+        getInsideDiameter() {
+            // 内径 = 外径 - 壁厚*2
+            const { thickness, diameter } = this.formData
+            return diameter - (thickness*2)
+        },
+        getWeight() {
+            const { density, diameter } = this.formData
+            let v
+            if(this.isBan) {
+                v = this.getVolume()
+                return ((v * density) / 1000000.0).toFixed(5)
+            }
+            else {
+                v = this.getVolume(diameter)
+                let weight = ((v * density) / 1000000.0).toFixed(5)
+                if(this.isBang) {
+                    return weight
+                }
+                else {
+                    // 内径
+                    const insideDiameter = this.getInsideDiameter()
+
+                    let insideV = this.getVolume(insideDiameter)
+                    let insideWeight = ((insideV * density) / 1000000.0).toFixed(5)
+                    // 外径 - 内径
+                    return weight - insideWeight
+                }
+            }
+        },
         handlerReset() {
             // console.log(1111)
             this.formData = {
@@ -295,7 +355,9 @@ export default {
                 density: 1.2, // 密度
                 price: "",
                 cost: '',
-                number: 1
+                number: 1,
+                // insideDiameter: ''
+                thickness: '', // 壁厚
             }
         },
         handlerSave() {
@@ -307,6 +369,8 @@ export default {
                 {
                     ...this.formData,
                     isBan: this.isBan,
+                    isBang: this.isBang,
+                    isGuan: this.isGuan,
                     money: this.money,
                     weight: this.weight,
                     result: {...this.result}

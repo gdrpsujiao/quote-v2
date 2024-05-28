@@ -15,12 +15,12 @@
             :accordion="true"
           >
 
-            <van-collapse-item title="测试页面" name="test">
+            <van-collapse-item title="测试功能" name="test">
 
             </van-collapse-item>
-            <router-link to="" class="van-collapse-item van-cell">
-              <span class="van-cell__title">测试页面</span>
-            </router-link>
+            <div class="van-collapse-item van-cell">
+              <span class="van-cell__title" @click="onClick">旺旺照妖镜</span>
+            </div>
 
           </van-collapse>
         </section>
@@ -68,6 +68,9 @@ export default {
     ...mapActions('view', ['setMenuState']),
     handleClose() {
         this.showMenu = false
+    },
+    onClick() {
+      window.location.href = 'https://tb-search.vercel.app'
     }
   }
 }
