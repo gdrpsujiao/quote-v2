@@ -293,13 +293,15 @@ export default {
     },
     methods: {
         ...mapActions('quote', ['updateLocalQuote']),
-        toRound(num, decimal = 5) {
+        toRound(num, decimal = 2) {
             if(isNaN(num)) {
                 return 0
             }
             const p1 = Math.pow(10, decimal+1)
             const p2 = Math.pow(10, decimal)
-            return Math.round(num*p1/10)/p2
+            // return Math.round(num*p1/10)/p2
+            // 向上取整
+            return Math.ceil(num*p1/10)/p2
         },
         getVolume(diameter) {
             // 直径从外面传进来
