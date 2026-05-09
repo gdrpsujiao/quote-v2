@@ -1,9 +1,14 @@
 import axios from 'axios'
 // import Vue from 'vue'
 
-const instance = axios.create({
-    timeout: 10000
-})
+const instance = process.env.NODE_ENV !== 'production'? 
+    axios.create({
+        timeout: 10000
+    }) :
+    axios.create({
+        timeout: 10000,
+        baseURL: 'https://lty-s3.s3.ap-east-1.amazonaws.com'
+    }) 
 
 instance.interceptors.request.use(function(config) {
     return config
