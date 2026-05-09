@@ -15,6 +15,14 @@ module.exports = {
                 '@assets': resolveSrc('./src/assets')
               }
         },
+        devServer: {
+            proxy: {
+                '/49_tk': {
+                    target: 'https://lty-s3.s3.ap-east-1.amazonaws.com',
+                    changeOrigin: true
+                }
+            }
+        }
     },
     css: {
         loaderOptions: {

@@ -14,9 +14,9 @@ const router = new VueRouter({
       component: () => import('../views/quote')
     },
     {
-      path: '/test',
-      name: 'test',
-      component: () => import('../views/test')
+      path: '/play',
+      name: 'play',
+      component: () => import('../views/play')
     }
   ]
 })

@@ -24,10 +24,11 @@ export default {
         this.setMenuState(!this.menuState)
     },
     handlerLogo() {
-        this.$notify({
-            type: 'danger',
-            message: '你想干嘛'
-        })
+        // this.$notify({
+        //     type: 'danger',
+        //     message: '你想干嘛'
+        // })
+        this.$router.replace('/')
     }
   }
 }

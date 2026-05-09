@@ -13,16 +13,50 @@
           <van-collapse 
             v-model="activeNames"
             :accordion="true"
-          >
-
-            <van-collapse-item title="测试功能" name="test">
-
-            </van-collapse-item>
-            <div class="van-collapse-item van-cell">
+          > 
+            <!-- <div class="van-collapse-item van-cell">
               <span class="van-cell__title" @click="onClick">旺旺照妖镜</span>
-            </div>
-
+            </div> -->
+            <!-- <div class="van-collapse-item van-cell">
+              <span class="van-cell__title" @click="onPlay">娱乐赛</span>
+            </div> -->
+            <van-collapse-item title="娱乐赛" name="play">
+              <section class="confirm-container">
+                <span class="title">内部功能请输入邀请码</span>
+                <van-field l
+                  v-model="confirmCode" 
+                  placeholder="输入邀请码"
+                  class="v-input" />
+                  <v-button 
+                      text="确认"
+                      type="info"
+                      size="small"
+                      :block="true"
+                      class="btb-confirm"
+                      @click="handlerConfirm" />
+              </section>
+            </van-collapse-item>
           </van-collapse>
+
+          <!-- <van-popup v-model="showConfirmPassword">
+            <section class="confirm-popup-container">
+              <span class="title">付费功能请输入邀请码</span>
+              <van-field 
+                v-model="confirmCode" 
+                placeholder="邀请码"
+                class="v-input" />
+              <div class="btn-container">
+                <v-button 
+                    text="取消" 
+                    @click="showConfirmPassword = false"
+                     />
+                <v-button 
+                    text="确认"
+                    @click="handlerConfirm" />
+              </div>
+            </section>
+          </van-popup> -->
+
         </section>
     </van-popup>
 </template>
@@ -34,17 +68,19 @@ export default {
   data() {
     return {
         showMenu: false,
-        activeNames: [],
+        showConfirmPassword: false,
+        activeNames: 'play',
         menuList: [
           {
             name: 'test',
             label: '测试页',
           }
-        ]
+        ],
+        confirmCode: ''
     }
   },
   computed: {
-    ...mapState('view', ['menuState'])
+    ...mapState('view', ['menuState', 'confirmView'])
   },
   watch: {
     menuState: {
@@ -65,12 +101,32 @@ export default {
     },
   },
   methods: {
-    ...mapActions('view', ['setMenuState']),
+    ...mapActions('view', ['setMenuState', 'setConfirmView']),
     handleClose() {
         this.showMenu = false
     },
     onClick() {
       window.location.href = 'https://tb-search.vercel.app'
+    },
+    onPlay() {
+      // console.log('van')
+      // this.$dialog({ message: 'test' })
+      this.showConfirmPassword = true
+    },
+    handlerConfirm(){
+      // console.log(this.confirmCode)
+      // 娱乐限制
+      // 单机没服务器写着玩
+      let code = this.confirmCode.toLowerCase().trim()
+      if(code== 'apeng') {
+        // 保存到本地 Store
+        this.setConfirmView(true)
+        // 跳转页面
+        this.$router.push('/play')
+      }
+      else {
+        this.$toast.fail('邀请码有误')
+      }
     }
   }
 }
@@ -86,12 +142,32 @@ export default {
         font-size: 26px;
         writing-mode: vertical-lr;
     }
+    .confirm-container {
+      // padding: 20px;   
+      .title {
+        color: $primary;
+      }
+      .v-input {
+        &::after {
+          border-bottom: 0px;
+        }
+      }
+      .btn-confirm {
+
+      }
+    }
 }
 </style>
 
 <style lang="scss">
 .ap-menu {
   .menu-container {
+    .van-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
     .van-collapse {
       font-size: 16px;
       a.van-collapse-item {

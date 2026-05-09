@@ -19,7 +19,9 @@ import {
   Collapse,
   CollapseItem,
   Tabs,
-  Tab
+  Tab,
+  Dialog,
+  Toast
 } from 'vant'
 
 Vue.config.productionTip = false
@@ -35,6 +37,8 @@ Vue.use(Button)
   .use(CollapseItem)
   .use(Tabs)
   .use(Tab)
+  .use(Dialog)
+  .use(Toast)
 
 new Vue({
   router,

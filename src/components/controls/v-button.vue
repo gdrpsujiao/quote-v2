@@ -3,6 +3,7 @@
         :type="type" 
         :size="size" 
         :text="text"
+        :block="block"
         @click="handlerClick"
     >
         <!-- {{ label }} -->
@@ -24,6 +25,10 @@ export default {
         size: {
             type: String,
             default: 'normal'
+        },
+        block: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
