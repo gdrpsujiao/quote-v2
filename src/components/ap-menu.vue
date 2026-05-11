@@ -23,17 +23,35 @@
             <van-collapse-item title="娱乐赛" name="play">
               <section class="confirm-container">
                 <span class="title">内部功能请输入邀请码</span>
-                <van-field l
-                  v-model="confirmCode" 
-                  placeholder="输入邀请码"
-                  class="v-input" />
-                  <v-button 
-                      text="确认"
-                      type="info"
-                      size="small"
-                      :block="true"
-                      class="btb-confirm"
-                      @click="handlerConfirm" />
+                <template v-if="confirmView">
+                   <!-- <van-field l
+                    v-model="confirmCode" 
+                    placeholder="输入邀请码"
+                    class="v-input" /> -->
+                    <p>您已输入过邀请码，可以选择清空</p>
+                    <v-button 
+                        text="清空"
+                        :plain="true"
+                        type="warning"
+                        size="small"
+                        :block="true"
+                        class="btb-confirm"
+                        @click="handlerConfirmCancel" />
+                </template>
+                <template v-else>
+                   <van-field
+                    v-model="confirmCode" 
+                    placeholder="输入邀请码"
+                    class="v-input" />
+                    <v-button 
+                        text="确认"
+                        type="info"
+                        size="small"
+                        :block="true"
+                        class="btb-confirm"
+                        @click="handlerConfirm" />
+                </template>
+               
               </section>
             </van-collapse-item>
           </van-collapse>
@@ -127,6 +145,10 @@ export default {
       else {
         this.$toast.fail('邀请码有误')
       }
+    },
+    handlerConfirmCancel() {
+      this.setConfirmView(false)
+      this.$router.replace('/')
     }
   }
 }
@@ -146,6 +168,10 @@ export default {
       // padding: 20px;   
       .title {
         color: $primary;
+      }
+      p {
+        padding: 10px 0;
+        font-size: 12px;
       }
       .v-input {
         &::after {

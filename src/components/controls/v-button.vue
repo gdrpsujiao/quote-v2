@@ -4,6 +4,7 @@
         :size="size" 
         :text="text"
         :block="block"
+        :plain="plain"
         @click="handlerClick"
     >
         <!-- {{ label }} -->
@@ -27,6 +28,10 @@ export default {
             default: 'normal'
         },
         block: {
+            type: Boolean,
+            default: false
+        },
+        plain: {
             type: Boolean,
             default: false
         }
