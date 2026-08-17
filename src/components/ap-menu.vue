@@ -14,66 +14,10 @@
             v-model="activeNames"
             :accordion="true"
           > 
-            <!-- <div class="van-collapse-item van-cell">
-              <span class="van-cell__title" @click="onClick">旺旺照妖镜</span>
-            </div> -->
-            <!-- <div class="van-collapse-item van-cell">
-              <span class="van-cell__title" @click="onPlay">娱乐赛</span>
-            </div> -->
-            <van-collapse-item title="娱乐赛" name="play">
-              <section class="confirm-container">
-                <span class="title">内部功能请输入邀请码</span>
-                <template v-if="confirmView">
-                   <!-- <van-field l
-                    v-model="confirmCode" 
-                    placeholder="输入邀请码"
-                    class="v-input" /> -->
-                    <p>您已输入过邀请码，可以选择清空</p>
-                    <v-button 
-                        text="清空"
-                        :plain="true"
-                        type="warning"
-                        size="small"
-                        :block="true"
-                        class="btb-confirm"
-                        @click="handlerConfirmCancel" />
-                </template>
-                <template v-else>
-                   <van-field
-                    v-model="confirmCode" 
-                    placeholder="输入邀请码"
-                    class="v-input" />
-                    <v-button 
-                        text="确认"
-                        type="info"
-                        size="small"
-                        :block="true"
-                        class="btb-confirm"
-                        @click="handlerConfirm" />
-                </template>
-               
-              </section>
-            </van-collapse-item>
+            <div class="van-collapse-item van-cell">
+              <span class="van-cell__title">广告位招租</span>
+            </div>
           </van-collapse>
-
-          <!-- <van-popup v-model="showConfirmPassword">
-            <section class="confirm-popup-container">
-              <span class="title">付费功能请输入邀请码</span>
-              <van-field 
-                v-model="confirmCode" 
-                placeholder="邀请码"
-                class="v-input" />
-              <div class="btn-container">
-                <v-button 
-                    text="取消" 
-                    @click="showConfirmPassword = false"
-                     />
-                <v-button 
-                    text="确认"
-                    @click="handlerConfirm" />
-              </div>
-            </section>
-          </van-popup> -->
 
         </section>
     </van-popup>
@@ -86,7 +30,6 @@ export default {
   data() {
     return {
         showMenu: false,
-        showConfirmPassword: false,
         activeNames: 'play',
         menuList: [
           {
@@ -126,30 +69,6 @@ export default {
     onClick() {
       window.location.href = 'https://tb-search.vercel.app'
     },
-    onPlay() {
-      // console.log('van')
-      // this.$dialog({ message: 'test' })
-      this.showConfirmPassword = true
-    },
-    handlerConfirm(){
-      // console.log(this.confirmCode)
-      // 娱乐限制
-      // 单机没服务器写着玩
-      let code = this.confirmCode.toLowerCase().trim()
-      if(code== 'apeng') {
-        // 保存到本地 Store
-        this.setConfirmView(true)
-        // 跳转页面
-        this.$router.push('/play')
-      }
-      else {
-        this.$toast.fail('邀请码有误')
-      }
-    },
-    handlerConfirmCancel() {
-      this.setConfirmView(false)
-      this.$router.replace('/')
-    }
   }
 }
 </script>

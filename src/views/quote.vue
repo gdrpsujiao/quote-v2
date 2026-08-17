@@ -193,6 +193,11 @@
                 </van-tab>
             </van-tabs>
 
+            <div class="data-view">
+                总重量：<span>{{ localQuoteView.allWeight }}</span>
+                总金额：<span>{{ localQuoteView.allMoney }}</span>
+            </div>
+
             <div class="btn-container">
                 <span class="btn-clean" @click="handlerClean">清空</span>
             </div>
@@ -289,7 +294,28 @@ export default {
         },
         hasLocalData() {
             return this.localQuote.length > 0? true: false
+        },
+        localQuoteView() {
+            // 用于展示当前存储的数据
+            if(!this.hasLocalData) return false
+            
+            let result = this.localQuote.reduce((result, item) => {
+                let weight = item.result.allWeight
+                result.allWeight = this.toRound(result.allWeight + weight)
+
+                result.allMoney = this.toRound(result.allMoney + item.money)
+
+                return result
+            }, {
+                allWeight: 0,
+                allMoney: 0
+            })
+            // 处理数据
+            return result
         }
+    },
+    mounted() {
+        // console.log(this.localQuoteView, '==')
     },
     methods: {
         ...mapActions('quote', ['updateLocalQuote']),
@@ -461,6 +487,7 @@ export default {
         }
     }
     .data-list-container {
+        position: relative;
         margin-top: 50px;
         .data-content {
             position: relative;
@@ -485,6 +512,19 @@ export default {
                 right: 20px;
                 font-size: 20px;
                 color: $warning;
+            }
+        }
+        .data-view {
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+            font-size: 12px;
+            span {
+                display: inline-block;
+                padding-right: 10px;
+                color: $success;
+                font-weight: bold;
+                font-size: 16px;
             }
         }
         .btn-container {

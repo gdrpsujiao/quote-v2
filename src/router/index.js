@@ -12,11 +12,6 @@ const router = new VueRouter({
       path: '/',
       name: 'quote',
       component: () => import('../views/quote')
-    },
-    {
-      path: '/play',
-      name: 'play',
-      component: () => import('../views/play')
     }
   ]
 })

@@ -7,7 +7,7 @@ const instance = process.env.NODE_ENV !== 'production'?
     }) :
     axios.create({
         timeout: 10000,
-        baseURL: 'https://lty-s3.s3.ap-east-1.amazonaws.com'
+        baseURL: 'https://test.com'
     }) 
 
 instance.interceptors.request.use(function(config) {
