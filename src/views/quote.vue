@@ -1,6 +1,9 @@
 <template>
     <section class="quote-page">
-        <h1>重量计算器</h1>
+        <h1>
+            重量计算器
+            <van-icon name="setting" @click="onSetting" />
+        </h1>
         <div class="form-box">
             <div class="form-label">
                 类型
@@ -178,16 +181,17 @@
                             <span>长：{{ item.circleLong }}</span>
                         </div>
                         <div class="tr">
-                            <span>数量：</span>
-                            <span>{{ item.number }}</span>
+                            <span>数量：{{ item.number }}</span>
+                            <span>单价: {{ item.price }}</span>
+                        </div>
+                        
+                        <div class="tr">
+                            <span>重量：</span>
+                            <span>{{ item.result.allWeight }}</span>
                         </div>
                         <div class="tr">
                             <span>金额：</span>
                             <span>{{ item.money }}</span>
-                        </div>
-                        <div class="tr">
-                            <span>重量：</span>
-                            <span>{{ item.result.allWeight }}</span>
                         </div>
                     </div>
                 </van-tab>
@@ -204,13 +208,21 @@
             <!-- <v-button text="清空" size="large " type="default" /> -->
         </section>
 
+        <ap-setting-value 
+            v-model="showSettingPopup"
+            @save="handlerSaveSetting" />
     </section>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import ApSettingValue from '@/components/ap-setting-value'
+
 export default {
     name: 'Quote',
+    components: {
+        ApSettingValue
+    },
     data() {
         return {
             formData: {
@@ -221,16 +233,17 @@ export default {
                 diameter: "", // 直径
                 circleLong: "",
                 density: 1.2, // 密度
-                price: "",
+                price: 26,
                 cost: '',
                 number: 1,
                 // insideDiameter: '', // 内径
                 thickness: '', // 壁厚
             },
+            showSettingPopup: false,
         }
     },
     computed: {
-        ...mapState('quote', ['localQuote']),
+        ...mapState('quote', ['localQuote', 'initQuoteForm']),
         isBan() {
             return this.formData.shape == '板'
         },
@@ -316,6 +329,10 @@ export default {
     },
     mounted() {
         // console.log(this.localQuoteView, '==')
+        // 初始化 默认值
+        Object.keys(this.initQuoteForm).some(key => {
+            this.formData[key] = this.initQuoteForm[key]
+        })
     },
     methods: {
         ...mapActions('quote', ['updateLocalQuote']),
@@ -370,6 +387,9 @@ export default {
                 }
             }
         },
+        onSetting() {
+            this.showSettingPopup = true
+        },
         handlerReset() {
             // console.log(1111)
             this.formData = {
@@ -386,6 +406,7 @@ export default {
                 number: 1,
                 // insideDiameter: ''
                 thickness: '', // 壁厚
+                ...this.initQuoteForm, // 初始化默认值
             }
         },
         handlerSave() {
@@ -415,6 +436,13 @@ export default {
             let list = [...this.localQuote]
             list.splice(index, 1)
             this.updateLocalQuote(list)
+        },
+        handlerSaveSetting() {
+            // 保存默认值成功
+            console.log('save success')
+            Object.keys(this.initQuoteForm).some(key => {
+                this.formData[key] = this.initQuoteForm[key]
+            })
         }
     }
 }
@@ -428,8 +456,15 @@ export default {
     min-height: 100vh;
     background: #fafafa;
     h1 {
+        position: relative;
         padding: 20px 0;
         text-align: center;
+        .van-icon {
+            position: absolute;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+        }
     }
     .form-box {
         display: flex;
